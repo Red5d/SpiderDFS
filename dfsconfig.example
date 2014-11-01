@@ -1,0 +1,2 @@
+dfs0 local /media/.dfs0 rw
+dfs1 sshfs user@example.local:/media/.dfs0 rw

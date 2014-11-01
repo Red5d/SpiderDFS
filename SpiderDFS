@@ -1,0 +1,63 @@
+#! /bin/bash
+#
+# Author: Red5d
+#
+# SpiderDFS start script
+#
+
+if [ $UID != 0 ];then
+  echo "Run as root."
+  exit
+fi
+
+config=/media/.dfsconfig
+dfsLocation=/media/DFS
+mkdir -p $dfsLocation
+
+dfsNames=($(cat $config | awk '{print $1}'))
+dfsTypes=($(cat $config | awk '{print $2}'))
+dfsSources=($(cat $config | awk '{print $3}'))
+dfsPerms=($(cat $config | awk '{print $4}'))
+
+case "$1" in
+  umount)
+    umount $dfsLocation
+    for (( i=0; i<=${#dfsNames[@]}; i++ ))
+    do
+      case ${dfsTypes[i]} in
+      sshfs)
+        fusermount -u $(dirname $dfsLocation)/.${dfsNames[i]}
+        ;;
+      esac
+    done
+    exit
+    ;;
+  help)
+    echo "Usage: $0 <options> <config file>"
+    echo "Run with no options to mount with default config location."
+    echo "Options:"
+    echo "    umount    - Unmounts the DFS using the default or specified config file."
+    echo "    help      - Shows this help."
+    echo
+    ;;
+  *)
+esac
+
+branches=""
+
+for (( i=0; i<=${#dfsNames[@]}; i++ ))
+do
+  case ${dfsTypes[i]} in
+  local)
+    branches=$branches":"${dfsSources[i]}"="${dfsPerms[i]}
+    ;;
+  sshfs)
+    mkdir -p $(dirname $dfsLocation)/.${dfsNames[i]}
+    sshfs -o allow_other ${dfsSources[i]} $(dirname $dfsLocation)/.${dfsNames[i]}
+    branches=$branches":"$(dirname $dfsLocation)"/."${dfsNames[i]}"="${dfsPerms[i]}
+    ;;
+  esac
+done
+
+mount -t aufs -o br$branches -o udba=reval -o create=rr none $dfsLocation
+
