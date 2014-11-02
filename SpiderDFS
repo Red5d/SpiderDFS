@@ -37,7 +37,7 @@ case "$1" in
     echo "Run with no options to mount with default config location."
     echo "Options:"
     echo "    umount    - Unmounts the DFS using the default or specified config file."
-    echo "    mhddfs    - Use mhddfs instead of AuFS to combine the mountpoints.
+    echo "    mhddfs    - Use mhddfs instead of AuFS to combine the mountpoints."
     echo "    help      - Shows this help."
     echo
     ;;
