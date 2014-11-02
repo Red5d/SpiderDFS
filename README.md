@@ -16,5 +16,4 @@ This will connect to and mount the external (or local) filesystems defined in th
 The dfsconfig.example file shows the config format for defining filesystems to add to the DFS. The name of the config file to use (/media/.dfsconfig by default) can be set in the SpiderDFS script.
 
 Run the SpiderDFS script with the "help" option to show the usage. (`sudo ./SpiderDFS help`)
-If you use the mhddfs option, you won't get the round-robin file writes that AuFS does, but installing AuFS on some things like ArchLinux is 
-tricky.
+If you use the mhddfs option, you won't get the round-robin file writes that AuFS does, but installing AuFS requires kernel patching which may be tricky or not possible in some situations.
