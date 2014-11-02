@@ -37,6 +37,7 @@ case "$1" in
     echo "Run with no options to mount with default config location."
     echo "Options:"
     echo "    umount    - Unmounts the DFS using the default or specified config file."
+    echo "    mhddfs    - Use mhddfs instead of AuFS to combine the mountpoints.
     echo "    help      - Shows this help."
     echo
     ;;
@@ -59,5 +60,8 @@ do
   esac
 done
 
-mount -t aufs -o br$branches -o udba=reval -o create=rr none $dfsLocation
-
+if [ "$1" == "mhddfs" ];then
+  mhddfs $(echo $branches | sed 's/://g' | sed 's/=rw/,/g' | sed 's/=ro/,/g' | sed 's/,$//g') $dfsLocation -o allow_other
+else
+  mount -t aufs -o br$branches -o udba=reval -o create=rr none $dfsLocation
+fi
